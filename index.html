@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Adductor Rehab — Surgical Intern Protocol</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1e2530;
+    --border: #2a3140;
+    --accent: #3b82f6;
+    --accent2: #6366f1;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --teal: #14b8a6;
+    --purple: #a855f7;
+    --text: #e2e8f0;
+    --muted: #8892a4;
+    --font: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #111827 0%, #1a2035 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 32px 24px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+  header h1 span { color: var(--accent); }
+  .header-meta { display: flex; gap: 20px; margin-top: 10px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--muted);
+  }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot-amber { background: var(--amber); }
+  .dot-green { background: var(--green); }
+  .dot-blue { background: var(--accent); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+  }
+
+  /* ── PHASE TABS ── */
+  .tabs-wrapper { margin-bottom: 32px; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--muted); font-size: 13px;
+    font-weight: 600; cursor: pointer; transition: all .2s; white-space: nowrap;
+  }
+  .tab-btn:hover { border-color: var(--accent); color: var(--text); }
+  .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ── PHASE CARD ── */
+  .phase-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .phase-header {
+    padding: 22px 28px; display: flex; align-items: center; gap: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .phase-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+  .phase-icon-1 { background: rgba(239,68,68,.15); }
+  .phase-icon-2 { background: rgba(245,158,11,.15); }
+  .phase-icon-3 { background: rgba(59,130,246,.15); }
+  .phase-icon-4 { background: rgba(168,85,247,.15); }
+  .phase-meta h2 { font-size: 18px; font-weight: 700; }
+  .phase-meta p { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .phase-duration {
+    margin-left: auto; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600;
+    color: var(--muted); white-space: nowrap;
+  }
+
+  .phase-body { padding: 28px; }
+  .objective-box {
+    background: var(--surface2); border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0; padding: 14px 18px;
+    font-size: 14px; color: var(--muted); margin-bottom: 28px;
+  }
+  .objective-box strong { color: var(--text); }
+
+  /* ── EXERCISE LIST ── */
+  .ex-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+  .ex-item {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px;
+    display: flex; gap: 16px; align-items: flex-start;
+    transition: border-color .2s;
+  }
+  .ex-item:has(.ex-check:checked) { border-color: var(--green); background: rgba(34,197,94,.04); }
+  .ex-check {
+    appearance: none; width: 22px; height: 22px; min-width: 22px;
+    border: 2px solid var(--border); border-radius: 6px;
+    background: var(--surface); cursor: pointer; margin-top: 1px;
+    transition: all .2s; position: relative;
+  }
+  .ex-check:checked { background: var(--green); border-color: var(--green); }
+  .ex-check:checked::after {
+    content: '✓'; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%); color: #fff; font-size: 13px; font-weight: 800;
+  }
+  .ex-info { flex: 1; }
+  .ex-name { font-weight: 700; font-size: 14px; }
+  .ex-desc { color: var(--muted); font-size: 13px; margin-top: 4px; line-height: 1.5; }
+  .ex-sets {
+    margin-top: 8px; display: inline-flex; gap: 8px; flex-wrap: wrap;
+  }
+  .ex-pill {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 3px 10px; font-size: 11px;
+    font-weight: 700; color: var(--accent); letter-spacing: .3px;
+  }
+
+  /* ── CLEARANCE ── */
+  .clearance-box {
+    background: rgba(34,197,94,.06); border: 1px solid rgba(34,197,94,.25);
+    border-radius: 12px; padding: 16px 20px; display: flex; gap: 12px; align-items: flex-start;
+  }
+  .clearance-icon { font-size: 20px; margin-top: 1px; }
+  .clearance-text { font-size: 13px; color: var(--muted); }
+  .clearance-text strong { color: var(--green); font-size: 14px; display: block; margin-bottom: 3px; }
+
+  /* ── EXECUTION CUES ── */
+  .cues-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-bottom: 36px; }
+  .cue-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .cue-header {
+    padding: 16px 20px 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cue-icon { font-size: 22px; }
+  .cue-title { font-weight: 700; font-size: 15px; }
+  .cue-steps { padding: 14px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .cue-step {
+    display: flex; gap: 12px; align-items: flex-start;
+    cursor: pointer; padding: 8px 12px; border-radius: 8px;
+    border: 1px solid transparent; transition: all .15s;
+  }
+  .cue-step:hover { background: var(--surface2); border-color: var(--border); }
+  .cue-step-check {
+    appearance: none; width: 18px; height: 18px; min-width: 18px;
+    border: 2px solid var(--border); border-radius: 4px;
+    background: var(--surface); cursor: pointer; margin-top: 2px;
+    transition: all .2s; position: relative; pointer-events: none;
+  }
+  .cue-step:has(.cue-step-check:checked) .cue-step-check { background: var(--teal); border-color: var(--teal); }
+  .cue-step-check:checked::after {
+    content: '✓'; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%); color: #fff; font-size: 11px; font-weight: 800;
+  }
+  .cue-step-check:checked { background: var(--teal); border-color: var(--teal); }
+  .cue-step label { font-size: 13px; color: var(--muted); cursor: pointer; line-height: 1.5; }
+
+  /* ── SVG DIAGRAM ── */
+  .diagram-wrapper {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; margin-bottom: 36px;
+  }
+  .diagram-title { font-weight: 700; font-size: 15px; margin-bottom: 20px; }
+  .diagram-sub { font-size: 13px; color: var(--muted); margin-top: -14px; margin-bottom: 20px; }
+
+  /* ── EXPANDERS ── */
+  .expander-group { display: flex; flex-direction: column; gap: 12px; }
+  .expander {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .expander-trigger {
+    width: 100%; background: none; border: none; color: var(--text);
+    padding: 18px 22px; display: flex; align-items: center; gap: 14px;
+    cursor: pointer; text-align: left; font-size: 15px; font-weight: 700;
+    transition: background .15s;
+  }
+  .expander-trigger:hover { background: var(--surface2); }
+  .expander-trigger .exp-icon { font-size: 20px; }
+  .expander-trigger .exp-arrow {
+    margin-left: auto; font-size: 12px; color: var(--muted);
+    transition: transform .25s; display: inline-block;
+  }
+  .expander.open .exp-arrow { transform: rotate(180deg); }
+  .expander-body {
+    max-height: 0; overflow: hidden; transition: max-height .35s ease;
+  }
+  .expander.open .expander-body { max-height: 2000px; }
+  .expander-content { padding: 0 22px 22px; border-top: 1px solid var(--border); padding-top: 20px; }
+
+  /* ── INFO BLOCKS ── */
+  .info-block { margin-bottom: 20px; }
+  .info-block:last-child { margin-bottom: 0; }
+  .info-block h4 { font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; }
+  .info-block p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+  .info-block p strong { color: var(--text); }
+
+  .warning-box {
+    background: rgba(239,68,68,.07); border: 1px solid rgba(239,68,68,.25);
+    border-radius: 10px; padding: 14px 18px; font-size: 13px;
+    color: var(--muted); margin-top: 14px;
+  }
+  .warning-box strong { color: var(--red); }
+
+  .tip-box {
+    background: rgba(59,130,246,.07); border: 1px solid rgba(59,130,246,.25);
+    border-radius: 10px; padding: 14px 18px; font-size: 13px;
+    color: var(--muted); margin-top: 10px;
+  }
+  .tip-box strong { color: var(--accent); }
+
+  .script-box {
+    background: var(--surface2); border-left: 3px solid var(--teal);
+    border-radius: 0 10px 10px 0; padding: 14px 18px;
+    font-size: 13px; font-style: italic; color: var(--text); margin: 10px 0;
+    line-height: 1.7;
+  }
+
+  .or-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 14px; }
+  .or-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .or-card .or-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; }
+  .or-card .or-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+  /* ── PROGRESS TIMELINE ── */
+  .timeline { display: flex; gap: 0; margin-bottom: 36px; }
+  .tl-phase {
+    flex: 1; position: relative;
+  }
+  .tl-phase:not(:last-child)::after {
+    content: ''; position: absolute; top: 20px; right: 0;
+    width: calc(100% - 60px); height: 2px; background: var(--border);
+    transform: translateX(60px); z-index: 0;
+  }
+  .tl-dot {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px; position: relative; z-index: 1;
+    border: 2px solid var(--border); background: var(--surface);
+  }
+  .tl-dot-1 { background: rgba(239,68,68,.2); border-color: var(--red); color: var(--red); }
+  .tl-dot-2 { background: rgba(245,158,11,.2); border-color: var(--amber); color: var(--amber); }
+  .tl-dot-3 { background: rgba(59,130,246,.2); border-color: var(--accent); color: var(--accent); }
+  .tl-dot-4 { background: rgba(168,85,247,.2); border-color: var(--purple); color: var(--purple); }
+  .tl-label { font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.3; max-width: 80px; }
+  .tl-label strong { color: var(--text); font-size: 12px; display: block; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    header { padding: 20px 18px 18px; }
+    .container { padding: 20px 16px; }
+    .phase-header { flex-wrap: wrap; }
+    .phase-duration { margin-left: 0; }
+    .timeline { gap: 4px; }
+    .tl-phase:not(:last-child)::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header>
+  <h1>Adductor Tendinopathy <span>Rehab Protocol</span></h1>
+  <div class="header-meta">
+    <span class="badge"><span class="dot dot-amber"></span>Post-FAI Surgery</span>
+    <span class="badge"><span class="dot dot-amber"></span>Bilateral Guarding Flare</span>
+    <span class="badge"><span class="dot dot-blue"></span>Surgical Intern — July 1, 2026</span>
+    <span class="badge"><span class="dot dot-green"></span>12-Week Progressive Protocol</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ══════════ PHASE TIMELINE ══════════ -->
+  <div class="section-label">Recovery Roadmap</div>
+  <div class="timeline" style="margin-bottom:36px;">
+    <div class="tl-phase">
+      <div class="tl-dot tl-dot-1">1</div>
+      <div class="tl-label"><strong>Down-Regulation</strong>Days 1–14</div>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-dot tl-dot-2">2</div>
+      <div class="tl-label"><strong>Static Stabilization</strong>Days 15–30</div>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-dot tl-dot-3">3</div>
+      <div class="tl-label"><strong>Linear Loading</strong>Weeks 5–8</div>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-dot tl-dot-4">4</div>
+      <div class="tl-label"><strong>Eccentric Remodeling</strong>Weeks 9–12+</div>
+    </div>
+  </div>
+
+  <!-- ══════════ PHASE TABS ══════════ -->
+  <div class="section-label">Exercise Phases</div>
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('p1', this)">🔴 Phase 1 — Down-Regulation</button>
+      <button class="tab-btn" onclick="showTab('p2', this)">🟡 Phase 2 — Static Stabilization</button>
+      <button class="tab-btn" onclick="showTab('p3', this)">🔵 Phase 3 — Linear Loading</button>
+      <button class="tab-btn" onclick="showTab('p4', this)">🟣 Phase 4 — Eccentric Remodeling</button>
+    </div>
+  </div>
+
+  <!-- ── PHASE 1 ── -->
+  <div id="p1" class="tab-pane active">
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-icon phase-icon-1">🧘</div>
+        <div class="phase-meta">
+          <h2>Phase 1 — Down-Regulation</h2>
+          <p>Calm the nervous system, break involuntary muscle spindle firing via reciprocal inhibition</p>
+        </div>
+        <div class="phase-duration">📅 Days 1–14</div>
+      </div>
+      <div class="phase-body">
+        <div class="objective-box">
+          <strong>Objective:</strong> The adductors are in a sustained neurological guard state — this is a <strong>software problem</strong>, not structural failure. Goal is to down-regulate the threat signal via parasympathetic activation and low-load reciprocal inhibition, not to push through pain.
+        </div>
+        <div class="ex-list">
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p1e1" />
+            <div class="ex-info">
+              <div class="ex-name">Supported 90/90 Diaphragmatic Breathing</div>
+              <div class="ex-desc">Legs elevated on couch at 90°. 4-second nasal inhale, expanding pelvic floor outward. 8-second pursed-lip exhale, softening groin. Focus on full pelvic floor drop — not belly breathing.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">BID (twice daily)</span>
+                <span class="ex-pill">10 min per session</span>
+                <span class="ex-pill">Pain: 0/10</span>
+              </div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p1e2" />
+            <div class="ex-info">
+              <div class="ex-name">Isometric Active Abduction</div>
+              <div class="ex-desc">Supine, knees bent, feet flat. Press knees outward against your own hands at <strong>20% effort only</strong>. This activates glutes/abductors via reciprocal inhibition — firing the antagonist to quiet the adductor.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">3 sets × 10 reps</span>
+                <span class="ex-pill">Hold 10 seconds each</span>
+                <span class="ex-pill">≤20% effort</span>
+              </div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p1e3" />
+            <div class="ex-info">
+              <div class="ex-name">Prone Glute Max Isolation</div>
+              <div class="ex-desc">Lie prone, knee bent to 90°. Hover knee 1 inch off the surface using <strong>pure glute squeeze</strong> — zero hamstring cramping allowed. If you feel hamstring engagement, ease off. This wakes up the posterior chain as a hip stabilizer.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">2 sets × 10 reps</span>
+                <span class="ex-pill">1s hold at top</span>
+                <span class="ex-pill">Glute-only focus</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="clearance-box">
+          <div class="clearance-icon">✅</div>
+          <div class="clearance-text">
+            <strong>Phase 1 Clearance Criteria</strong>
+            VAS pain ≤ 2/10 at rest &nbsp;|&nbsp; Zero adductor spasms during normal indoor walking &nbsp;|&nbsp; Able to complete Phase 1 exercises without pain increase
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PHASE 2 ── -->
+  <div id="p2" class="tab-pane">
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-icon phase-icon-2">🏋️</div>
+        <div class="phase-meta">
+          <h2>Phase 2 — Static Stabilization</h2>
+          <p>Teach the brain to stabilize the femoral head without using the adductor emergency brake</p>
+        </div>
+        <div class="phase-duration">📅 Days 15–30</div>
+      </div>
+      <div class="phase-body">
+        <div class="objective-box">
+          <strong>Objective:</strong> Build a reliable proprioceptive map so the CNS stops defaulting to the adductor as its emergency stabilizer. The hip joint needs to feel <strong>safe in space</strong> — gluteus medius must become the primary stabilizer before any dynamic loading.
+        </div>
+        <div class="ex-list">
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p2e1" />
+            <div class="ex-info">
+              <div class="ex-name">Tripod Single-Leg Balance</div>
+              <div class="ex-desc">Barefoot. Level ASIS bilaterally. Apply tripod foot (big toe joint + little toe joint + heel center). Micro-hinge hip 2–5°. Regress with index finger on counter if swaying — the point is <strong>zero groin recruitment</strong>.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">3 sets × 45 seconds</span>
+                <span class="ex-pill">Both legs</span>
+                <span class="ex-pill">Zero groin tightness</span>
+              </div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p2e2" />
+            <div class="ex-info">
+              <div class="ex-name">Bilateral Glute Bridge with Abduction Band</div>
+              <div class="ex-desc">Loop band around knees. Drive heels firmly into floor. Bridge up while simultaneously pressing knees apart against band resistance. Hold 2 seconds at top. The abduction force activates glute med while bridging activates glute max.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">3 sets × 12 reps</span>
+                <span class="ex-pill">2s hold at top</span>
+                <span class="ex-pill">Light–medium band</span>
+              </div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p2e3" />
+            <div class="ex-info">
+              <div class="ex-name">Tall Kneeling Pallof Press</div>
+              <div class="ex-desc">Kneel tall, hips fully extended (no hip hinge), anchor resistance band at chest height to your side. Press band straight out from chest, hold 2s, return. Zero torso rotation permitted — this challenges anti-rotation stability under pelvic control.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">3 sets × 10 reps</span>
+                <span class="ex-pill">Both sides</span>
+                <span class="ex-pill">2s hold extended</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="clearance-box">
+          <div class="clearance-icon">✅</div>
+          <div class="clearance-text">
+            <strong>Phase 2 Clearance Criteria</strong>
+            60-second single-leg balance with zero groin pain &nbsp;|&nbsp; Can stand for 1 continuous hour (morning rounds simulation) &nbsp;|&nbsp; No adductor guarding on palpation
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PHASE 3 ── -->
+  <div id="p3" class="tab-pane">
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-icon phase-icon-3">🏥</div>
+        <div class="phase-meta">
+          <h2>Phase 3 — Linear Loading</h2>
+          <p>Reintroduce progressive mechanical load in a strict straight-line plane — post-shift only</p>
+        </div>
+        <div class="phase-duration">📅 Weeks 5–8 (July–August)</div>
+      </div>
+      <div class="phase-body">
+        <div class="objective-box">
+          <strong>Objective:</strong> Begin axial tendon loading post-residency shift. Exercises are <strong>linear plane only</strong> — zero lateral stress. This phase runs concurrently with intern duties; all sessions are post-shift, ≤20 minutes, low overhead.
+        </div>
+        <div class="ex-list">
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p3e1" />
+            <div class="ex-info">
+              <div class="ex-name">Bodyweight Box Squats</div>
+              <div class="ex-desc">Slow 3-second descent to a chair (glutes tap lightly — don't fully unload). Progressively widen stance across weeks: narrow → shoulder-width → slightly wide. Emphasize tripod foot and glute activation on the way up.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">3 sets × 10 reps</span>
+                <span class="ex-pill">3s descent tempo</span>
+                <span class="ex-pill">Week-by-week stance widening</span>
+              </div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p3e2" />
+            <div class="ex-info">
+              <div class="ex-name">Supported Linear Lunges</div>
+              <div class="ex-desc">Hold a railing or wall with one hand to <strong>eliminate lateral stabilization demands</strong>. Step directly forward (no diagonal). Keep rear knee tracking straight. The support allows the hip to load without recruiting the adductor as a dynamic stabilizer.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">3 sets × 8 reps</span>
+                <span class="ex-pill">Both legs</span>
+                <span class="ex-pill">Rail support required</span>
+              </div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p3e3" />
+            <div class="ex-info">
+              <div class="ex-name">Seated Adductor Isometric Squeezes</div>
+              <div class="ex-desc">Sit in a chair, pillow between knees. Squeeze at <strong>strictly 10–20% effort</strong> — no more. Hold 5 seconds, full release. This introduces graded tendon loading — controlled enough to stimulate collagen remodeling without triggering the guarding reflex.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">3 sets × 10 reps</span>
+                <span class="ex-pill">5s hold, full release</span>
+                <span class="ex-pill">10–20% effort MAX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="clearance-box">
+          <div class="clearance-icon">✅</div>
+          <div class="clearance-text">
+            <strong>Phase 3 Clearance Criteria</strong>
+            50% effort pain-free adductor squeeze &nbsp;|&nbsp; Complete a 4-hour standing OR case using modifications (stool, wide stance) &nbsp;|&nbsp; No post-shift pain escalation next morning
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PHASE 4 ── -->
+  <div id="p4" class="tab-pane">
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-icon phase-icon-4">⚡</div>
+        <div class="phase-meta">
+          <h2>Phase 4 — Eccentric Remodeling</h2>
+          <p>Lengthen and strengthen remodeled scar tissue under tension; restore lateral deceleration capacity</p>
+        </div>
+        <div class="phase-duration">📅 Weeks 9–12+ (Autumn)</div>
+      </div>
+      <div class="phase-body">
+        <div class="objective-box">
+          <strong>Objective:</strong> Eccentric loading is the gold standard for tendinopathy remodeling. This phase <strong>lengthens tissue under load</strong> — driving fibroblast alignment along stress lines and replacing disorganized scar collagen with load-bearing Type I collagen. Slow tempos mandatory.
+        </div>
+        <div class="ex-list">
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p4e1" />
+            <div class="ex-info">
+              <div class="ex-name">Side-Lying Adductor Lifts</div>
+              <div class="ex-desc">Lie on injured side. Cross top leg over and place foot flat for support. Lift bottom straight leg toward ceiling 6–8 inches. <strong>Slow 4-second lowering phase is the eccentric stimulus.</strong> Do not let the leg drop.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">3 sets × 10 reps</span>
+                <span class="ex-pill">4s eccentric lowering</span>
+                <span class="ex-pill">Both sides</span>
+              </div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p4e2" />
+            <div class="ex-info">
+              <div class="ex-name">Eccentric Slider Lateral Lunges</div>
+              <div class="ex-desc">Uninjured foot stable on floor. Injured foot on towel or furniture slider. Slide outward <strong>slowly (3–4 seconds)</strong> into a lateral lunge as far as comfortable. Pull back in using glute contraction — not a passive snap back. This eccentrically loads adductor in the lengthened position.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">3 sets × 6 reps</span>
+                <span class="ex-pill">3–4s slide out</span>
+                <span class="ex-pill">Glute-driven return</span>
+              </div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <input type="checkbox" class="ex-check" id="p4e3" />
+            <div class="ex-info">
+              <div class="ex-name">Copenhagen Plank Regression (Short Lever)</div>
+              <div class="ex-desc">Lie on your side. Rest <strong>injured knee</strong> (not ankle) on a bench — this is the short lever regression. Push up so your body forms a straight line. Hold. This builds adductor endurance under bodyweight loading in an anti-gravity position. Progress to ankle-on-bench when ready.</div>
+              <div class="ex-sets">
+                <span class="ex-pill">3 sets × 15 seconds</span>
+                <span class="ex-pill">Knee on bench (short lever)</span>
+                <span class="ex-pill">Straight body line</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="clearance-box">
+          <div class="clearance-icon">✅</div>
+          <div class="clearance-text">
+            <strong>Phase 4 Clearance Criteria (Full Recovery)</strong>
+            100% pain-free max voluntary adductor contraction &nbsp;|&nbsp; Symmetrical passive abduction ROM bilaterally &nbsp;|&nbsp; No pain with 4+ hour surgical cases without modifications
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ EXECUTION CUES ══════════ -->
+  <div style="margin-top:44px;">
+    <div class="section-label">Pre-Exercise Execution Cues — Check Before Every Session</div>
+    <div class="cues-grid">
+
+      <!-- TRIPOD -->
+      <div class="cue-card">
+        <div class="cue-header">
+          <span class="cue-icon">🦶</span>
+          <span class="cue-title">Tripod Foot Activation</span>
+        </div>
+        <div class="cue-steps">
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Press big toe joint (1st metatarsal head) firmly into floor</label>
+          </label>
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Press little toe joint (5th metatarsal head) firmly into floor</label>
+          </label>
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Press center of heel firmly into floor — all 3 points loaded equally</label>
+          </label>
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Screw foot <strong>outward</strong> into floor (external rotation torque) — you should feel the outer glute fire reflexively</label>
+          </label>
+        </div>
+      </div>
+
+      <!-- QUAD vs GLUTE -->
+      <div class="cue-card">
+        <div class="cue-header">
+          <span class="cue-icon">🦵</span>
+          <span class="cue-title">Quad vs. Glute Dominance Check</span>
+        </div>
+        <div class="cue-steps">
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Maintain 2–5° knee micro-hinge (never fully locked)</label>
+          </label>
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Shift hips 0.5 inches backward (hip hinge initiated)</label>
+          </label>
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Palpate outer upper glute (glute med) with fingertips — confirm it is firm before loading</label>
+          </label>
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Quads should feel soft at setup — if thighs are tense before movement, reset</label>
+          </label>
+        </div>
+      </div>
+
+      <!-- LEVEL PELVIS -->
+      <div class="cue-card">
+        <div class="cue-header">
+          <span class="cue-icon">⚖️</span>
+          <span class="cue-title">Pelvic Level Check</span>
+        </div>
+        <div class="cue-steps">
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Place both thumbs on ASIS (anterior superior iliac spine) points bilaterally</label>
+          </label>
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Confirm thumbs are at identical height — neither side hiking or dropping</label>
+          </label>
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Use a mirror or stand 1 inch from a wall to verify no lateral pelvis drift</label>
+          </label>
+          <label class="cue-step">
+            <input type="checkbox" class="cue-step-check" />
+            <label>Maintain this level position throughout all single-leg phases — if hitch occurs, regress immediately</label>
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ PATHWAY DIAGRAM ══════════ -->
+  <div class="diagram-wrapper">
+    <div class="diagram-title">Pathological Mechanism — Why Adductor Guarding Occurs</div>
+    <div class="diagram-sub">The FAI → Guarding → Ischemia cascade explained visually</div>
+    <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#4b5563"/>
+        </marker>
+      </defs>
+      <!-- Node 1 -->
+      <rect x="10" y="60" width="148" height="80" rx="12" fill="#1e2a3a" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="84" y="96" text-anchor="middle" fill="#93c5fd" font-size="13" font-weight="700">FAI Surgery</text>
+      <text x="84" y="113" text-anchor="middle" fill="#64748b" font-size="11">Altered hip</text>
+      <text x="84" y="127" text-anchor="middle" fill="#64748b" font-size="11">biomechanics</text>
+      <!-- Arrow -->
+      <line x1="159" y1="100" x2="188" y2="100" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <!-- Node 2 -->
+      <rect x="192" y="60" width="148" height="80" rx="12" fill="#2a1e1e" stroke="#ef4444" stroke-width="1.5"/>
+      <text x="266" y="96" text-anchor="middle" fill="#fca5a5" font-size="13" font-weight="700">Adductor</text>
+      <text x="266" y="113" text-anchor="middle" fill="#64748b" font-size="11">Compensatory</text>
+      <text x="266" y="127" text-anchor="middle" fill="#64748b" font-size="11">overuse / tendinosis</text>
+      <!-- Arrow -->
+      <line x1="341" y1="100" x2="370" y2="100" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <!-- Node 3 -->
+      <rect x="374" y="60" width="148" height="80" rx="12" fill="#2a2a1e" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="448" y="96" text-anchor="middle" fill="#fcd34d" font-size="13" font-weight="700">Threat Signal</text>
+      <text x="448" y="113" text-anchor="middle" fill="#64748b" font-size="11">Brain commands</text>
+      <text x="448" y="127" text-anchor="middle" fill="#64748b" font-size="11">involuntary guard</text>
+      <!-- Arrow -->
+      <line x1="523" y1="100" x2="552" y2="100" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <!-- Node 4 -->
+      <rect x="556" y="60" width="148" height="80" rx="12" fill="#1e2a1e" stroke="#ef4444" stroke-width="1.5"/>
+      <text x="630" y="96" text-anchor="middle" fill="#fca5a5" font-size="13" font-weight="700">Ischemia &amp; Spasm</text>
+      <text x="630" y="113" text-anchor="middle" fill="#64748b" font-size="11">Lactic acid, stiffness,</text>
+      <text x="630" y="127" text-anchor="middle" fill="#64748b" font-size="11">mimics re-injury</text>
+      <!-- Arrow -->
+      <line x1="705" y1="100" x2="734" y2="100" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <!-- Node 5 -->
+      <rect x="738" y="60" width="148" height="80" rx="12" fill="#1e1e2a" stroke="#a855f7" stroke-width="1.5"/>
+      <text x="812" y="96" text-anchor="middle" fill="#d8b4fe" font-size="13" font-weight="700">Load Transfer</text>
+      <text x="812" y="113" text-anchor="middle" fill="#64748b" font-size="11">Torque shifts to</text>
+      <text x="812" y="127" text-anchor="middle" fill="#64748b" font-size="11">back &amp; knees</text>
+    </svg>
+  </div>
+
+  <!-- ══════════ EXPANDERS ══════════ -->
+  <div class="section-label">Clinical Context &amp; OR Playbook</div>
+  <div class="expander-group">
+
+    <!-- PATHOLOGY -->
+    <div class="expander" id="exp-pathology">
+      <button class="expander-trigger" onclick="toggleExpander('exp-pathology')">
+        <span class="exp-icon">🔬</span>
+        Clinical Pathology — Why Your Adductors Are Doing This
+        <span class="exp-arrow">▼</span>
+      </button>
+      <div class="expander-body">
+        <div class="expander-content">
+          <div class="info-block">
+            <h4>The FAI Link</h4>
+            <p>Post-FAI surgery, even with successful cam/pincer and labral repair, the hip's structural geometry has changed. The femoral head now tracks slightly differently in the acetabulum during gait and stance. The adductor longus — whose primary job is to pull the femoral head medially and assist in pelvic stability — <strong>picks up the stabilization workload that the labrum and bony geometry no longer fully provide.</strong> Over months, this overcurrent loading causes microtrauma, collagen disorganization, and the fibrotic thickening you're experiencing at the musculotendinous junction.</p>
+          </div>
+          <div class="info-block">
+            <h4>Tendinopathy vs. Acute Strain</h4>
+            <p>Pure tendinopathy is <strong>degenerative, not inflammatory</strong> — this is why NSAIDs don't help (and actively impair healing). The pathological tissue is disorganized Type III collagen, neovascularization, and failed tenocyte remodeling. The acute bilateral "flare" you're experiencing is not a new tear — it is <strong>superimposed neural guarding</strong> on a chronic tendinopathic substrate, triggered by accumulated threat perception.</p>
+          </div>
+          <div class="info-block">
+            <h4>Why Shockwave Helped But Destabilized You</h4>
+            <p>Shockwave (ESWT) is highly effective at stimulating tenocyte activity and breaking down calcific deposits — this is why you gained tendon strength. However, ESWT does not address the <strong>neuromuscular control deficit</strong> upstream of the tendon. Stronger tissue with worse motor patterning = more efficient loading of a still-poorly-stabilized joint. Hence the stability regression after treatment.</p>
+          </div>
+          <div class="warning-box"><strong>⚠️ NSAID Warning:</strong> Ibuprofen, Naproxen, and Meloxicam block the COX-2 pathway required for prostaglandin-driven tendon healing cascades. Use <strong>Acetaminophen only</strong> for acute soreness during training and floor-of-hospital duties.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PSYCHOLOGY OF GUARDING -->
+    <div class="expander" id="exp-psych">
+      <button class="expander-trigger" onclick="toggleExpander('exp-psych')">
+        <span class="exp-icon">🧠</span>
+        Psychology of Guarding — The Fear-Avoidance Loop
+        <span class="exp-arrow">▼</span>
+      </button>
+      <div class="expander-body">
+        <div class="expander-content">
+          <div class="info-block">
+            <h4>Guarding Is a Software Problem, Not Hardware Failure</h4>
+            <p>The bilateral spasm flare is not a structural failure — it is a <strong>neurological executive decision</strong>. Your brain has elevated the threat rating of your hip beyond a tolerable threshold and has commanded the adductors to perform an involuntary isometric contraction — essentially locking the femoral head into the socket as a temporary splint. This is the same mechanism seen in acute back pain and protective spasm.</p>
+          </div>
+          <div class="info-block">
+            <h4>The Threat Bucket Model</h4>
+            <p>Central sensitization works via a <strong>cumulative threat load</strong>. Your current bucket contains: residency start anxiety + fatigue/sleep debt + chronic hip pathology + fear of re-injury during long OR cases. When this bucket overflows, the brain's pain volume knob turns up — even low-load movements trigger outsized neural responses. The goal is not to suppress pain, but to <strong>drain the threat bucket</strong> systematically.</p>
+          </div>
+          <div class="info-block">
+            <h4>Reciprocal Inhibition — The Neurological Override</h4>
+            <p>The Phase 1 protocol (isometric abduction, glute activation) works by <strong>Sherrington's Law of Reciprocal Inhibition</strong>: activating the antagonist muscle (glute med/abductors) sends an inhibitory signal to the adductor motor neurons, temporarily quieting the guard reflex. This is not a stretch — it's a neural reset.</p>
+          </div>
+          <div class="tip-box"><strong>💡 Reframe for the brain:</strong> When you feel guarding onset, consciously label it: <em>"My nervous system is protecting me — this is not a structural injury signal."</em> This prefrontal override has measurable effects on pain neuroscience outcomes. Combine with a 90/90 breathing reset.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OR SURVIVAL -->
+    <div class="expander" id="exp-or">
+      <button class="expander-trigger" onclick="toggleExpander('exp-or')">
+        <span class="exp-icon">🏥</span>
+        Surgical Intern OR Survival Playbook
+        <span class="exp-arrow">▼</span>
+      </button>
+      <div class="expander-body">
+        <div class="expander-content">
+          <div class="info-block">
+            <h4>Pre-Case Communication Script</h4>
+            <p>Use this exact framing before any case likely to exceed 90 minutes:</p>
+          </div>
+          <div class="script-box">
+            "Just a heads-up — I'm managing an adductor strain from a sports injury. To keep my pelvis stable and assist effectively, I'm going to grab a surgical stool for this case. Happy to discuss positioning with the team."
+          </div>
+          <div class="info-block">
+            <h4>Intraoperative Positioning Modifications</h4>
+          </div>
+          <div class="or-grid">
+            <div class="or-card">
+              <div class="or-label">Stance</div>
+              <div class="or-text">Stand shoulder-width or slightly wider to distribute axial load across both hips — avoids unilateral hip impingement postures</div>
+            </div>
+            <div class="or-card">
+              <div class="or-label">Stool Coordination</div>
+              <div class="or-text">Brief the circulating nurse to slide in a surgical stool before draping. Use it proactively — not reactively when in pain</div>
+            </div>
+            <div class="or-card">
+              <div class="or-label">Retraction Force</div>
+              <div class="or-text">Shift retraction force to upper body (shoulders, forearms). Avoid leaning backward or loading the posterior chain when pulling</div>
+            </div>
+            <div class="or-card">
+              <div class="or-label">Micro-Break Protocol</div>
+              <div class="or-text">On any natural pause (instrument exchange, waiting for specimen), perform a 10-second standing isometric glute squeeze to reset proprioception</div>
+            </div>
+          </div>
+          <div class="info-block" style="margin-top:18px;">
+            <h4>Post-Shift Recovery Protocol</h4>
+            <p>Immediately post-shift (within 30 minutes): 10 minutes of 90/90 breathing. Then Phase 1 or 2 exercises depending on current protocol week. <strong>No Phase 3/4 exercises on days with 8+ hour OR duties</strong> — recovery is the training stimulus on those days.</p>
+          </div>
+          <div class="warning-box"><strong>⚠️ Red Line:</strong> If bilateral guarding returns mid-shift, do not push through. Step out, perform 5 minutes of standing 90/90 breathing at the scrub sink. Inform your senior: <em>"I need 5 minutes — hip is flaring."</em> This is a medical issue. You have disclosed it. Act accordingly.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="height:60px;"></div>
+</div>
+
+<script>
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function toggleExpander(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+  }
+
+  // Clicking the cue-step div toggles its checkbox
+  document.querySelectorAll('.cue-step').forEach(step => {
+    step.addEventListener('click', function(e) {
+      if (e.target.tagName === 'INPUT') return;
+      const cb = this.querySelector('.cue-step-check');
+      cb.checked = !cb.checked;
+    });
+  });
+</script>
+</body>
+</html>
